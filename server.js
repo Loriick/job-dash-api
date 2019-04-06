@@ -34,19 +34,19 @@ app.use(
   })
 );
 
-// set up jwt auth middleware
-// app.use(async (req, res, next) => {
-//   const token = req.headers["authorization"];
-//   if (token !== "null") {
-//     try {
-//       const currentUser = await jwt.verify(token, process.env.SECRET);
-//       req.currentUser = currentUser;
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   }
-//   next();
-// });
+//set up jwt auth middleware
+app.use(async (req, res, next) => {
+  const token = req.headers["authorization"];
+  if (token !== "null") {
+    try {
+      const currentUser = await jwt.verify(token, process.env.SECRET);
+      req.currentUser = currentUser;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  next();
+});
 
 app.use("/graphiql", graphiqlExpress({ endpointURL: "/graphql" }));
 
@@ -58,8 +58,8 @@ app.use(
     context: {
       Job,
       Interview,
-      User
-      // currentUser
+      User,
+      currentUser
     }
   }))
 );

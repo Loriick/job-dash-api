@@ -1,4 +1,5 @@
 exports.typeDefs = `
+
     type Job {
         _id: ID!
         position: String!
@@ -27,10 +28,9 @@ exports.typeDefs = `
 
     type User{
         _id: ID!
-        username: String! 
+        username: String!
         password: String!
-        email: String! 
-        joinDate: String
+        email: String!  @unique
         applications: [Job]
     }
 
@@ -41,7 +41,7 @@ exports.typeDefs = `
     }
 
     input SigninUserInput{
-        username: String!
+        email: String!
         password: String!
     }
 
