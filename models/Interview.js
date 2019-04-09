@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const InterviewSchema = new Schema({
   date: {
-    type: String,
+    type: Date,
     required: true
   },
   address: String,
