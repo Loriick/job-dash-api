@@ -29,7 +29,7 @@ mongoose
 const app = express();
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "*",
     credentials: true
   })
 );
@@ -37,6 +37,7 @@ app.use(
 //set up jwt auth middleware
 app.use(async (req, res, next) => {
   const token = req.headers["authorization"];
+
   if (token !== "null") {
     try {
       const currentUser = await jwt.verify(token, process.env.SECRET);
@@ -53,7 +54,7 @@ app.use("/graphiql", graphiqlExpress({ endpointURL: "/graphql" }));
 app.use(
   "/graphql",
   bodyParser.json(),
-  graphqlExpress(() => ({
+  graphqlExpress(({ currentUser }) => ({
     schema,
     context: {
       Job,

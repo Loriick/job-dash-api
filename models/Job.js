@@ -12,7 +12,7 @@ const JobSchema = new Schema({
   },
   spontaneous: Boolean,
   jobUrl: String,
-  date: String,
+  date: Date,
   creator: {
     type: Schema.Types.ObjectId,
     ref: "User"

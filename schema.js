@@ -7,7 +7,7 @@ exports.typeDefs = `
         spontaneous: Boolean
         jobUrl: String
         date: String
-        creator: User
+        creator: User!
         interviews: [Interview]
     }
 
@@ -75,8 +75,10 @@ exports.typeDefs = `
     type Query {
         getJobs:[Job]
         getJob(_id:ID!):Job
+        getUserJob:[Job]
         getInterviews: [Interview]
         getJobInterview(_id:ID!): [Interview]
+        me:User
     }
     
 

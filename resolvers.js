@@ -16,20 +16,35 @@ exports.resolvers = {
   Query: {
     getJobs: async (root, args, { Job, currentUser }) => {
       try {
-        unAuthenticated(currentUser);
+        //unAuthenticated(currentUser);
         return await Job.find()
           .sort({ createdDate: "desc" })
           .populate({ path: "interviews", model: "Interview" });
       } catch (error) {
-        console.log("error", error);
+        console.error("error", error);
       }
     },
     getJob: async (root, { _id }, { Job, currentUser }) => {
       unAuthenticated(currentUser);
       try {
-        return await Job.findOne({ _id });
+        return await Job.findOne({ _id }).populate({
+          path: "interviews",
+          model: "Interview"
+        });
       } catch (error) {
-        console.log("error", error);
+        console.error("error", error);
+      }
+    },
+    getUserJob: async (root, args, { currentUser, Job, User }) => {
+      try {
+        const user = await User.findOne({ email: currentUser.email });
+        const jobs = await Job.find({
+          creator: user._id
+        }).populate({ path: "interviews", model: "Interview" });
+        console.log(user);
+        return jobs;
+      } catch (err) {
+        console.error(err);
       }
     },
     getInterviews: async (root, args, { Interview, currentUser }) => {
@@ -55,14 +70,23 @@ exports.resolvers = {
       } catch (error) {
         console.error("error", error);
       }
+    },
+    me: async (root, args, { User, currentUser }) => {
+      if (!currentUser) return null;
+      const user = await User.findOne({
+        email: currentUser.email
+      }).populate({ path: "applications", model: "Job" });
+      return user;
     }
   },
   Mutation: {
-    addJob: async (root, { data }, { Job, currentUser }) => {
+    addJob: async (root, { data }, { Job, currentUser, User }) => {
       try {
         unAuthenticated(currentUser);
+        const user = await User.findOne({ email: currentUser.email });
         const job = await new Job({
-          ...data
+          ...data,
+          creator: user._id
         }).save();
         return job;
       } catch (error) {
@@ -95,7 +119,8 @@ exports.resolvers = {
       try {
         unAuthenticated(currentUser);
         const interview = await new Interview({
-          ...data
+          ...data,
+          application: data.application
         }).save();
         const application = await Job.findOne({ _id: data.application });
         application.interviews.push(interview);
