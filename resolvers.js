@@ -14,9 +14,9 @@ const unAuthenticated = currentUser => {
 
 exports.resolvers = {
   Query: {
-    getJobs: async (root, args, { Job, currentUser }) => {
+    getJobs: async (root, args, { Job }) => {
       try {
-        unAuthenticated(currentUser);
+        // unAuthenticated(currentUser);
         return await Job.find()
           .sort({ createdDate: "desc" })
           .populate({ path: "interviews", model: "Interview" });
